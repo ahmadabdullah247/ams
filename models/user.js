@@ -14,13 +14,13 @@ var UserSchema = new Schema({
     nic: String,
     picture: String,
     role: {
-        isActive: Boolean,
         isTeacher: Boolean,
         isClassTeacher: Boolean,
         isHeadOfDepartment: Boolean,
         isAdmin: Boolean,
         isStudent: Boolean,
     },
+    isActive: Boolean,
     dateCreated: Date
 });
 

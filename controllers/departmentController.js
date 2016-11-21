@@ -4,9 +4,10 @@ var Department = require('../models/department.js')
 
 
 // Create new department
-router.post('/department', function(req, res) {
+router.post('/', function(req, res) {
     new Department({
-
+        branch_id:"582ee620e859700f883c5d08",
+        name: req.body.name
     }).save();
     res.end();
 });

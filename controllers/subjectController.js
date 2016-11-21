@@ -4,9 +4,10 @@ var Subject = require('../models/subject.js')
 
 
 // Create new subject
-router.post('/subject', function(req, res) {
+router.post('/', function(req, res) {
     new Subject({
-
+        name: req.body.name,
+        description: "xyz",
     }).save();
     res.end();
 });

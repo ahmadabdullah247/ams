@@ -1,14 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../models/user.js')
+var User = require('../models/user.js');
+
+
 
 // login =================================================================================== 
-router.get('/', function(req, res) {
-    res.render('pages/login');
-    // User.find(function(err, users) {
-    //     res.render('pages/login', { users: users });
-    // });
-});
+// router.get('/', passport.authentication('local'), function(req, res) {
+//     res.render('pages/login');
+// });
 router.post('/', function(req, res) {
     User.findOne({ username: req.body.username, password: req.body.password }, function(err, user) {
         if (err) {
@@ -16,10 +15,16 @@ router.post('/', function(req, res) {
         } else if (user == null || user == undefined) {
             res.render('pages/login');
         }
+        req.session.user = user;
+        req.session.user.password = undefined;
         res.render('pages/dashboard');
     });
 });
-
+// login =================================================================================== 
+router.get('/logout', function(req, res) {
+    req.session.destroy();
+    res.redirect('/');
+});
 // Create new user
 router.post('/user', function(req, res) {
     new User({

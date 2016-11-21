@@ -4,9 +4,11 @@ var Branch = require('../models/branch.js')
 
 
 // Create new branch
-router.post('/branch', function(req, res) {
+router.post('/', function(req, res) {
     new Branch({
-
+        code: "001",
+        name: "XYZ School",
+        address: "I-10/3, Islamabad"
     }).save();
     res.end();
 });
