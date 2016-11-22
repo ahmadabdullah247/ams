@@ -9,19 +9,7 @@ var passport = require('passport');
 var passportLocal = require('passport-local');
 var passportHttp = require('passport-http');
 var mongoose = require('mongoose');
-// Controllers
-var _user = require('./controllers/userController.js');
-var _student = require('./controllers/studentController.js');
-var _faculty = require('./controllers/facultyController.js');
-var _assessment = require('./controllers/assessmentController.js');
-var _branch = require('./controllers/branchController.js');
-var _class = require('./controllers/classController.js');
-var _course = require('./controllers/courseController.js');
-var _department = require('./controllers/departmentController.js');
-var _fee = require('./controllers/feeController.js');
-var _result = require('./controllers/resultController.js');
-var _subject = require('./controllers/subjectController.js');
-var _teacherClass = require('./controllers/teacherClassController.js');
+
 
 // initilize variables ========================================================================================
 var app = express();
@@ -54,78 +42,43 @@ app.use(expressSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-var User = require('./models/user.js');
-passport.use(new passportLocal.Strategy(verifyCredentials));
-
-passport.use(new passportHttp.BasicStrategy(verifyCredentials));
-
-function verifyCredentials(username, password, next) {
-    User.findOne({ username: username, password: password }, function(err, user) {
-        if (err) {
-            next(null, new Error());
-        } else if (user == null || user == undefined) {
-            next(null, null);
-        }
-        // req.session.user = user;
-        // req.session.user.password = undefined;
-        next(null, user);
-    });
-}
-
-passport.serializeUser(function(user, next) {
-    next(null, user.id);
-});
-
-passport.deserializeUser(function(id, next) {
-    User.findOne({ _id: id }, function(err, user) {
-        if (err) {
-            next(null, new Error());
-        } else if (user == null || user == undefined) {
-            next(null, null);
-        }
-        // req.session.user = user;
-        // req.session.user.password = undefined;
-        next(null, user);
-    });
-});
-
-function ensureAuthenticated(req, res, next) {
-    req.isAuthenticated() ? next() : res.send(403);
-}
-
+// var local = require('./config/passport.js');
+// console.log(local);
 app.use("/public", express.static(__dirname + '/public')); // serve static files
 
-app.get('/', function(req, res) {
-    req.isAuthenticated() ? res.render('pages/dashboard') : res.render('pages/login');
-});
-app.post('/', passport.authenticate('local'), function(req, res) {
-    res.render('pages/dashboard', { isAuthenticated: req.isAuthenticated(), user: req.user });
-});
 
-app.get('/logout', function(req, res) {
-    req.logout();
-    res.render('pages/login');
-})
+// app.get('/', function(req, res) {
+//     req.isAuthenticated() ? res.render('pages/dashboard') : res.render('pages/login');
+// });
 
-app.get('/api', passport.authenticate('basic', { session: false }), function(req, res) {
-    res.json({
-        a: 'ho gaya',
-        b: 'sai ha'
-    })
-});
+// app.post('/', passport.authenticate('local'), function(req, res) {
+//     res.render('pages/dashboard', { isAuthenticated: req.isAuthenticated(), user: req.user });
+// });
+
+// app.get('/logout', function(req, res) {
+//     req.logout();
+//     res.render('pages/login');
+// });
+
+// app.get('/api', passport.authenticate('basic', { session: false }), function(req, res) {
+//     res.json({
+//         a: 'ho gaya',
+//         b: 'sai ha'
+//     })
+// });
 // controller path
-// app.use('/', _user);
-//app.use('/student', _student);
-// app.use('/faculty', _faculty);
-// app.use('/assessment', _assessment);
-// app.use('/branch', _branch);
-// app.use('/class', _class);
-// app.use('/course', _course);
-// app.use('/department', _department);
-// app.use('/fee', _fee);
-// app.use('/result', _result);
-// app.use('/subject', _subject);
-// app.use('/teacherClass', _teacherClass);
+app.use('/', require('./controllers/userController.js'));
+// app.use('/student', require('./controllers/studentController.js'));
+// app.use('/faculty', require('./controllers/facultyController.js'));
+// app.use('/assessment', require('./controllers/assessmentController.js'));
+// app.use('/branch', require('./controllers/branchController.js'));
+// app.use('/class', require('./controllers/classController.js'));
+// app.use('/course', require('./controllers/courseController.js'));
+// app.use('/department', require('./controllers/departmentController.js'));
+// app.use('/fee', require('./controllers/feeController.js'));
+// app.use('/result', require('./controllers/resultController.js'));
+// app.use('/subject', require('./controllers/subjectController.js'));
+// app.use('/teacherClass', require('./controllers/teacherClassController.js'));
 
 // start listning app  ========================================================================================
 app.listen(port);

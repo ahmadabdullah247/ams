@@ -1,14 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user.js');
-
+var passport = require('passport');
+require('../config/passport.js')();
 
 
 // login =================================================================================== 
-// router.get('/', passport.authentication('local'), function(req, res) {
-//     res.render('pages/login');
-// });
-router.post('/', function(req, res) {
+router.get('/', function(req, res) {
+    req.isAuthenticated() ? res.render('pages/dashboard') : res.render('pages/login');
+});
+router.post('/', passport.authenticate('local'), function(req, res) {
     User.findOne({ username: req.body.username, password: req.body.password }, function(err, user) {
         if (err) {
             res.render('pages/error');
@@ -22,7 +23,7 @@ router.post('/', function(req, res) {
 });
 // login =================================================================================== 
 router.get('/logout', function(req, res) {
-    req.session.destroy();
+    req.logout();
     res.redirect('/');
 });
 // Create new user
